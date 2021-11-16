@@ -1,45 +1,30 @@
-
-import json
-from calls import *
 class Elevator:
-    calls = []
-    curr_floor = 0
-    _type = []
-    _src = []
-    _dest = []
-    _time = 0
-    _in_motion = 0
-    def __init__(self, dct):
-        for k, v in dct.items():
-            setattr(self, k, v)
+    def __init__(self, dict_elev):
+        self.id = dict_elev['_id']
+        self._speed = dict_elev['_speed']
+        self._minFloor = dict_elev['_minFloor']
+        self._maxFloor = dict_elev['_maxFloor']
+        self._closeTime = dict_elev['_closeTime']
+        self._openTime = dict_elev['_openTime']
+        self._startTime = dict_elev['_startTime']
+        self._stopTime = dict_elev['_stopTime']
 
-    def __add__(self, call: Calls):
-        self.calls.append(call)
-        self._src.append(call.src)
-        self._dest.append(call.dest)
+        self.current_floor = 0
+        self.next_time_free = 0
 
-#t=d/s
-    def time_call(self):
-        time = 0
-        temp_floor = self.curr_floor
-        for call in self.calls:
-            time += abs(call.src - temp_floor)/self._speed
-            time += self._openTime + self._startTime + self._stopTime + self._closeTime
-            temp_floor = call.src
-            time += abs(call.dest - temp_floor)/self._speed
-            time += self._openTime + self._startTime + self._stopTime + self._closeTime
-            temp_floor = call.dest
-        return time
+    def df2dt(self, df):
+        return self._closeTime + self._startTime + df / self._speed + self._stopTime + self._openTime
 
-#calculate the time it will take for the elevator to complete the given call with the the rest of the calls
-    def time(self, call):
-        if len(self.calls) > 0:
-            total_time = self.time_call()
-            temp_floor = self.calls[len(self.calls)-1].dest #calculatin from the last destenation
-            call_time = abs(call.src - temp_floor) / self._speed
-            call_time += self._openTime + self._startTime + self._stopTime + self._closeTime
-            call_time += abs(call.dest - call.src) / self._speed
-            call_time += self._openTime + self._startTime + self._stopTime + self._closeTime
-            return total_time+call_time
-        else:
-            return 0
+    def update(self, travel_time, call):
+        # this function updates the elevator status, current floor is changed to the last elevator call destination, and
+        # the next time it will be free according to it's current state and expected travel time
+        self.current_floor = call['destination']
+
+        if self.next_time_free < call['t0']: self.next_time_free = call['t0'] + travel_time
+        else: self.next_time_free += travel_time
+
+    def __str__(self):
+        return f"_id:{self._id}, _speed:{self._speed}, _minFloor: {self._minFloor},_maxFloor:{self._maxFloor},_closeTime:{self._closeTime},_openTime:{self._openTime},_startTime:{self._startTime},_stopTime:{self._stopTime}"
+
+    def __repr__(self):
+        return f"_id:{self._id}, _speed:{self._speed}, _minFloor: {self._minFloor},_maxFloor:{self._maxFloor},_closeTime:{self._closeTime},_openTime:{self._openTime},_startTime:{self._startTime},_stopTime:{self._stopTime}"

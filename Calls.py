@@ -1,35 +1,15 @@
+from Elevators import *
+
+import pandas as pd
+
 
 class Calls:
-    _time = 0
-    _src = 0
-    _dest = 0
-    _invalid = 0
-    _id = 0
-    def __init__(self, arr):
-        try:
-            self._time = arr[0]
-            self._src = arr[1]
-            self._dest = arr[2]
-            self._invalid = arr[3]
-            self._id = arr[4]
-            if (self._src < self._dest):
-                self._type = 1
-            else:
-                self._type = -1
-        except:
-            print("Invalid call, size out of boundaries")
+    def __init__(self, file_name) -> object:
+        self.calls = pd.read_csv(file_name, header=None, usecols=[1, 2, 3, 5],
+                                 names=['t0', 'source', 'destination', 'elevator_index'])
+        self.calls['df'] = abs(self.calls['source'] - self.calls['destination'])
 
-    def __str__(self):
-        return f""
-
-    @property
-    def src(self):
-        return self._src
-
-    @property
-    def dest(self):
-        return self._dest
-
-
-
+    def get_elevators_time(self, elevators: Elevators):
+        for elev in elevators.Elevators_List:
+            self.calls[f'dt_elev_{elev.id}'] = elev.df2dt(self.calls['df'])
 
