@@ -33,3 +33,12 @@ In our algorithm we are using 3 main classes, Elevator, Elevators and Calls and 
  
  Main:
  for each call we check for each elevator the time it will take to fulfill the call from the current floor and we take the fastest elevator's index and aloocate the choosen elevator to this call and than we update the next time for the elevator and the currnt floor.
+ 
+ # Examples for allocations
+
+Here we would like to represent some of the calls allocation in a graph.
+for example, here we have of calls_A and B4 building.
+
+![B4callsA](https://user-images.githubusercontent.com/87694635/142169228-e1d677fe-37e8-461b-980c-0a25fcaa018b.png)
+ 
+
