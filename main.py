@@ -8,10 +8,12 @@ from calls_output import *
 
 
 if __name__ == '__main__':
-    c = Calls('./Calls_c.csv')
-    e = Elevators('B2.json')
+    call_case=input("please enter the call case in csv format:")
+    building_case=input("please enter the building case in json format:")
+    c = Calls('./'+call_case)
+    e = Elevators(building_case)
     c.get_elevators_time(e)
-    output = calls_output('./Calls_c.csv')
+    output = calls_output('./'+call_case)
     # print(c.calls)
 
     for i, call in c.calls.iterrows():
@@ -41,9 +43,7 @@ if __name__ == '__main__':
         best_elevator = e.Elevators_List[best_elevator_index]
         best_elevator.update(elev_times[best_elevator_index], call)
 
-        # print()
     output.save_csv(fileName='out.csv', calls=output.file)
-    # print(c.calls['elevator_index'])
     plt.figure()
     c.calls['elevator_index'].hist()
     plt.show()
